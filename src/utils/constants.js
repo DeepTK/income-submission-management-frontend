@@ -1,0 +1,8 @@
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+export const TOKEN = 'token';
+
+export const ROLES = {
+  USER: 'user',
+  ADMIN: 'admin',
+  SUPER_ADMIN: 'superadmin',
+};
