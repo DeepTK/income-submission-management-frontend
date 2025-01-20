@@ -8,7 +8,7 @@ import { PieChart, Pie, Tooltip } from "recharts";
 import { convertToPieUserData } from "../utils/helper";
 import PopupModal from "../components/PopupModal";
 
-const userDashboard = () => {
+const UserDashboard = () => {
   const { data } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState();
   const [dashboardData, setDashboardData] = useState();
@@ -96,4 +96,4 @@ const userDashboard = () => {
   );
 };
 
-export default userDashboard;
+export default UserDashboard;

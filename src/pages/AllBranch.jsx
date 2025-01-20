@@ -156,6 +156,7 @@ export default function AllBranch() {
         ...newBranchData,
       });
       if (response.status == 200 && response.data.success == true) {
+        console.log(response);
         actions.resetForm();
         toast.success(result.msg || "Branch Added!");
         closeModalHandler();
@@ -174,17 +175,14 @@ export default function AllBranch() {
             ? true
             : values.isActive,
       };
-
-      console.log(updatedBranchData);
       const response = await api.post(`/branch/update/${values._id}`, {
         ...updatedBranchData,
       });
       if (response.status == 200 && response.data.success == true) {
         actions.resetForm();
-        toast.success(result.msg || "Branch Updated!");
+        toast.success(response.data.data.msg || "Branch Updated!");
         closeModalHandler();
         getBranches();
-        window.location.reload();
       } else {
         toast.error(response.response.data.error || "Something went wrong!");
       }

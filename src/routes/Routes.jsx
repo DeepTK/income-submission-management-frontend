@@ -1,10 +1,10 @@
 import AllIncome from "../pages/AddIncome";
 import AddIncome from "../pages/AddIncome";
-import AdminPage from "../pages/AdminPage";
+import AdminPage from "../pages/AdminDashboard";
 import AllBranch from "../pages/AllBranch";
 import AllUsers from "../pages/AllUsers";
 import SuperadminDashboard from "../pages/SuperadminDashboard";
-import UserPage from "../pages/UserPage";
+import UserDashboard from "../pages/UserDashboard";
 import {
   QrCodeIcon,
   UserGroupIcon,
@@ -16,25 +16,25 @@ import {
 export const superadminRoutes = [
   {
     label: "Dashboard",
-    path: "/superadmin/dashboard",
+    path: "dashboard",
     component: <SuperadminDashboard />,
     icon: <QrCodeIcon className="h-6" />,
   },
   {
     label: "All Users",
-    path: "/superadmin/all-users",
+    path: "all-users",
     component: <AllUsers />,
     icon: <UserGroupIcon className="h-6" />,
   },
   {
     label: "All Users Income",
-    path: "/superadmin/all-users-income",
+    path: "all-users-income",
     component: <AllIncome />,
     icon: <DocumentCurrencyRupeeIcon className="h-6" />,
   },
   {
     label: "Branch",
-    path: "/superadmin/all-branch",
+    path: "all-branch",
     component: <AllBranch />,
     icon: <BuildingLibraryIcon className="h-6" />,
   },
@@ -42,25 +42,25 @@ export const superadminRoutes = [
 export const adminRoutes = [
   {
     label: "Dashboard",
-    path: "/admin/dashboard",
+    path: "dashboard",
     component: <AdminPage />,
     icon: <QrCodeIcon className="h-6" />,
   },
   {
     label: "All Users",
-    path: "/admin/all-users",
+    path: "all-users",
     component: <AllUsers />,
     icon: <UserGroupIcon className="h-6" />,
   },
   {
     label: "All Users Income",
-    path: "/admin/all-users-income",
+    path: "all-users-income",
     component: <AllIncome />,
     icon: <DocumentCurrencyRupeeIcon className="h-6" />,
   },
   {
     label: "Branch",
-    path: "/admin/branch",
+    path: "branch",
     component: <AllBranch />,
     icon: <BuildingLibraryIcon className="h-6" />,
   },
@@ -69,25 +69,25 @@ export const adminRoutes = [
 export const userRoutes = [
   {
     label: "Dashboard",
-    path: "/user/dashboard",
-    component: <UserPage />,
+    path: "dashboard",
+    component: <UserDashboard />,
     icon: <QrCodeIcon className="h-6" />,
   },
   {
     label: "Add Income",
-    path: "/user/add-income",
+    path: "add-income",
     component: <AddIncome />,
     icon: <DocumentCurrencyRupeeIcon className="h-6" />,
   },
   {
     label: "My Profile",
-    path: "/user/my-profile",
+    path: "my-profile",
     component: <AllUsers />,
     icon: <UserIcon className="h-6" />,
   },
   {
     label: "My Branch",
-    path: "/user/my-branch",
+    path: "my-branch",
     component: <AllBranch />,
     icon: <BuildingLibraryIcon className="h-6" />,
   },

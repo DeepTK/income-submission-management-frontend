@@ -103,8 +103,10 @@ export const month = [
 
 export const useAutoLogout = (navigate) => {
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const data = localStorage.getItem("data");
 
-  if (token) {
+  if (token && role && data) {
     try {
       const decoded = jwtDecode(token);
       const currentTime = Math.floor(Date.now() / 1000);
@@ -126,7 +128,15 @@ export const useAutoLogout = (navigate) => {
         navigate("/auth");
       }
     } catch (error) {
-      console.error("Token decoding failed", error);
+      localStorage.removeItem("token");
+      localStorage.removeItem("data");
+      localStorage.removeItem("role");
+      navigate("/auth");
     }
+  } else {
+    localStorage.removeItem("token");
+    localStorage.removeItem("data");
+    localStorage.removeItem("role");
+    navigate("/auth");
   }
 };

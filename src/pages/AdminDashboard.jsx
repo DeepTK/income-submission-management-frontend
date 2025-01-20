@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toast";
 import DummyDashboard from "../components/DummyDashboard";
 
-const AdminPage = () => {
+const AdminDashboard = () => {
   const { data } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState();
   const [dashboardData, setDashboardData] = useState();
@@ -101,4 +101,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default AdminDashboard;
