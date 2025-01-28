@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_URL } from "../utils/constants";
 const api = axios.create({
-  baseURL: API_URL || "http://localhost:8080",
+  baseURL: API_URL || "https://income-submission-management-backend.vercel.app",
 });
 
 api.interceptors.request.use(

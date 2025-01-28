@@ -20,13 +20,10 @@ export default function AllUsers() {
 
   const handleEditUser = (user) => {
     const isOwnData = user._id === data._id;
-
     const userToEdit =
       isOwnData || role == "superadmin"
         ? { ...user, branch: user.branch._id, password: "", cpassword: "" }
         : { ...user, branch: user.branch._id };
-
-    console.log(userToEdit);
 
     setInitialData(userToEdit);
 

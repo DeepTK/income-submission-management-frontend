@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:8080",
+        target: "https://income-submission-management-backend.vercel.app",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""), // Rewrite path if needed
       },

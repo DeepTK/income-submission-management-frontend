@@ -108,7 +108,7 @@ const Login = () => {
       }
     } else if (formType == "register") {
       const response = await api.post("/auth/register", { ...values });
-      if (response.status == 200 && response.data.success == true) {
+      if (response.status == 201 && response.data.success == true) {
         const result = response.data;
         actions.resetForm();
         toast.success(result.msg || "User created!");
