@@ -1,7 +1,6 @@
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import moment from "moment";
 import { capitalizeFirstLetter } from "./helper";
-import { EyeIcon } from "@heroicons/react/20/solid";
 export const userColumns = (setFormType, onEdit, onDelete) => [
   {
     accessorKey: "name",
@@ -59,7 +58,7 @@ export const userColumns = (setFormType, onEdit, onDelete) => [
     header: "Updated Date",
     cell: ({ row }) => {
       return (
-        <span>{moment(row.original.createdAt).format("DD-MM-YYYY HH:ss")}</span>
+        <span>{moment(row.original.updatedAt).format("DD-MM-YYYY HH:ss")}</span>
       );
     },
   },
@@ -135,7 +134,7 @@ export const branchColumns = (setFormType, onEdit, onDelete) => [
     header: "Updated Date",
     cell: ({ row }) => {
       return (
-        <span>{moment(row.original.createdAt).format("DD-MM-YYYY HH:ss")}</span>
+        <span>{moment(row.original.updatedAt).format("DD-MM-YYYY HH:ss")}</span>
       );
     },
   },
@@ -244,7 +243,7 @@ export const incomeColumns = (setFormType, onEdit, handleDeleteIncome) => [
     header: "Updated Date",
     cell: ({ row }) => {
       return (
-        <span>{moment(row.original.createdAt).format("DD-MM-YYYY HH:ss")}</span>
+        <span>{moment(row.original.updatedAt).format("DD-MM-YYYY HH:ss")}</span>
       );
     },
   },
