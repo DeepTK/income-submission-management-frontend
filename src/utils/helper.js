@@ -1,5 +1,3 @@
-import { jwtDecode } from "jwt-decode";
-
 export const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 export const formatCurrency = (amount) => {
@@ -103,6 +101,9 @@ export const month = [
   { value: 12, label: "December" },
 ];
 
+const currentYear = new Date().getFullYear();
+export const years = Array.from({ length: 100 }, (_, index) => currentYear - index);
+
 export const updateUserFormConfig = (setUserFormConfig, formType, isOwnData, role) => {
   setUserFormConfig((prevConfig) =>
     prevConfig.map((field) => {
@@ -124,44 +125,4 @@ export const updateUserFormConfig = (setUserFormConfig, formType, isOwnData, rol
       return field;
     })
   );
-};
-
-export const useAutoLogout = (navigate) => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
-  const data = localStorage.getItem("data");
-
-  if (token && role && data) {
-    try {
-      const decoded = jwtDecode(token);
-      const currentTime = Math.floor(Date.now() / 1000);
-      const expirationTime = decoded.exp;
-      const timeLeft = expirationTime - currentTime;
-
-      if (timeLeft > 0) {
-        const timeoutId = setTimeout(() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("data");
-          localStorage.removeItem("role");
-          navigate("/auth");
-        }, timeLeft * 1000);
-        return () => clearTimeout(timeoutId);
-      } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("data");
-        localStorage.removeItem("role");
-        navigate("/auth");
-      }
-    } catch (error) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("data");
-      localStorage.removeItem("role");
-      navigate("/auth");
-    }
-  } else {
-    localStorage.removeItem("token");
-    localStorage.removeItem("data");
-    localStorage.removeItem("role");
-    navigate("/auth");
-  }
 };

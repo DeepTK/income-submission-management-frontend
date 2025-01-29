@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 
-// User Registration Schema
 export const registrationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string()
@@ -28,12 +27,12 @@ export const createUserSchema = Yup.object().shape({
 });
 
 export const updateUserSchema = Yup.object().shape({
-  id: Yup.string().required("User id is required"),
+  _id: Yup.string().required("User id is required"),
   name: Yup.string().required("Name is required"),
   email: Yup.string()
     .email("Invalid email format")
     .required("Email is required"),
-  password: Yup.string(),
+  password: Yup.string().optional(),
   cpassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .when("password", {
@@ -42,7 +41,7 @@ export const updateUserSchema = Yup.object().shape({
       otherwise: Yup.string(),
     }),
   role: Yup.string().required("Role is required"),
-  // branch: Yup.string().required("Branch is required"),
+  branch: Yup.string().optional(),
   isActive: Yup.boolean().default(true).nullable(),
 });
 
@@ -58,7 +57,6 @@ export const updateBranchSchema = Yup.object().shape({
   isActive: Yup.boolean().default(true).nullable(),
 });
 
-// Login Schema
 export const loginSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email format")
@@ -66,7 +64,6 @@ export const loginSchema = Yup.object().shape({
   password: Yup.string().required("Password is required"),
 });
 
-// Add Income Schema
 export const createIncomeSchema = Yup.object().shape({
   year: Yup.number()
     .required("Year is required")
@@ -82,7 +79,6 @@ export const createIncomeSchema = Yup.object().shape({
   comments: Yup.string().optional(),
 });
 
-// Edit Income Schema
 export const editIncomeSchema = Yup.object().shape({
   income: Yup.number()
     .typeError("Income must be a number")
@@ -90,13 +86,11 @@ export const editIncomeSchema = Yup.object().shape({
     .required("Income is required"),
 });
 
-// Branch Management (Admin) Schema
 export const branchManagementSchema = Yup.object().shape({
   userId: Yup.string().required("User ID is required"),
   branch: Yup.string().required("Branch is required"),
 });
 
-// Report Filter Schema (Super Admin)
 export const reportFilterSchema = Yup.object().shape({
   branch: Yup.string().required("Branch is required"),
   startDate: Yup.date()

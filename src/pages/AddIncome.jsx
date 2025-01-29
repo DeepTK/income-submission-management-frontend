@@ -7,8 +7,13 @@ import { toast } from "react-toast";
 import EditModal from "../components/EditModal";
 import { createIncomeSchema } from "../utils/validationSchemas";
 import DynamicForm from "../components/DynamicForm";
-import { PlusIcon, UserPlusIcon } from "@heroicons/react/24/solid";
-import { calculateIncomeShares, handleNumberChange } from "../utils/helper";
+import { UserPlusIcon } from "@heroicons/react/24/solid";
+import {
+  calculateIncomeShares,
+  handleNumberChange,
+  month,
+  years,
+} from "../utils/helper";
 import ConfirmModal from "../components/ConfirmModal";
 import DummyTable from "../components/DummyTable";
 
@@ -20,9 +25,6 @@ export default function AllIncome() {
   const [initialData, setInitialData] = useState({});
   const [formType, setFormType] = useState("add");
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 100 }, (_, index) => currentYear - index);
-
   const openModalHandler = () => {
     setFormType("add");
     setInitialData({});
@@ -30,7 +32,7 @@ export default function AllIncome() {
   };
 
   const handleEditIncome = (income) => {
-    console.log(income);
+    setFormType("edit");
     setInitialData(income);
     setIsModalOpen(true);
   };
@@ -60,86 +62,57 @@ export default function AllIncome() {
   };
 
   const closeModalHandler = () => {
+    setFormType("add");
     setInitialData({});
     setIsModalOpen(false);
   };
 
   const handleSubmit = async (values, actions) => {
-    setIsLoading(true);
-    console.log(values);
-    if (formType == "add") {
-      console.log(data);
-      const incomeData = {
-        userId: data._id,
-        amount: values.amount,
-        year: values.year,
-        month: values.month,
-        comments: values.comments,
-      };
-      const response = await api.post("/income", incomeData);
-      if (response.status == 200 && response.data.success == true) {
-        const result = response.data;
+    try {
+      setIsLoading(true);
+      let response;
+
+      if (formType === "add") {
+        const incomeData = {
+          userId: data._id,
+          amount: values.amount,
+          year: values.year,
+          month: values.month,
+          comments: values.comments,
+        };
+        response = await api.post("/income", incomeData);
+      } else {
+        const incomeData = {
+          id: values._id,
+          amount: values.amount,
+          year: values.year,
+          month: values.month,
+          comments: values.comments,
+        };
+        response = await api.post(`/income/update/${values._id}`, incomeData);
+      }
+
+      if (response.status === 201 && response.data.success) {
         actions.resetForm();
-        toast.success(result.msg || "Income Added!");
-        setFormType("add");
+        toast.success(response.data.msg || "Income Added!");
         closeModalHandler();
         getIncomes();
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-        toast.error(response.response.data.error || "Something went wrong!");
+      } else if (response.status === 200 && response.data.success) {
+        actions.resetForm();
+        toast.success(response.data.msg || "Income updated!");
+        closeModalHandler();
+        getIncomes();
+      } 
+      else {
+        toast.error("Something went wrong!");
       }
-    } else {
+    } catch (error) {
+      console.log(error);
+      console.error("Error in handleSubmit:", error);
+      toast.error(error.response?.data?.error || "Something went wrong!");
+    } finally {
       setIsLoading(false);
-      const incomeData = {
-        id: values._id,
-        amount: values.amount,
-        year: values.year,
-        month: values.month,
-        comments: values.comments,
-      };
-
-      const response = await api.post(
-        "/income/update/" + values._id,
-        incomeData
-      );
-      if (response.status == 200 && response.data.success == true) {
-        const result = response.data;
-        actions.resetForm();
-        toast.success(result.msg || "Income Updated!");
-        setFormType("add");
-        closeModalHandler();
-        getIncomes();
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-        toast.error(response.response.data.error || "Something went wrong!");
-      }
     }
-
-    // setIsLoading(true);
-    // try {
-    //   const incomeData = {
-    //     userId: data._id,
-    //     amount: values.amount,
-    //     year: values.year,
-    //     month: values.month,
-    //     comments: values.comments,
-    //   };
-    //   const response = await api.post("/income", incomeData);
-    //   if (response.status === 200 && response.data.success === true) {
-    //     toast.success("Income added successfully!");
-    //     setIsLoading(false);
-    //     actions.resetForm();
-    //   } else {
-    //     toast.error(response.data.error || "Failed to add income.");
-    //     setIsLoading(false);
-    //   }
-    //   setIsModalOpen(false);
-    // } catch (error) {
-    //   setIsLoading(false);
-    //   toast.error(error.response?.data?.error || "Something went wrong!");
-    // }
   };
 
   const [incomeFormConfig, setIncomeFormConfig] = useState([
@@ -172,20 +145,7 @@ export default function AllIncome() {
       name: "month",
       label: "Month",
       type: "select",
-      options: [
-        { value: 1, label: "January" },
-        { value: 2, label: "February" },
-        { value: 3, label: "March" },
-        { value: 4, label: "April" },
-        { value: 5, label: "May" },
-        { value: 6, label: "June" },
-        { value: 7, label: "July" },
-        { value: 8, label: "August" },
-        { value: 9, label: "September" },
-        { value: 10, label: "October" },
-        { value: 11, label: "November" },
-        { value: 12, label: "December" },
-      ],
+      options: month,
       hidden: false,
       disabled: false,
     },
@@ -245,10 +205,10 @@ export default function AllIncome() {
             .map((entry) => entry.records)
             .flat();
           setIncomeData(recordsOnly);
-          setIsLoading(false)
+          setIsLoading(false);
         }
       } else {
-        setIsLoading(false)
+        setIsLoading(false);
         toast.error(response.response.data.error || "Something went wrong!");
       }
     } else {
@@ -262,9 +222,9 @@ export default function AllIncome() {
           item.twentieth = incomeshares.twentieth;
         });
         setIncomeData(result);
-        setIsLoading(false)
+        setIsLoading(false);
       } else {
-        setIsLoading(false)
+        setIsLoading(false);
         toast.error(response.response.data.error || "Something went wrong!");
       }
     }

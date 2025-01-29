@@ -155,7 +155,7 @@ export default function AllBranch() {
       const response = await api.post(`/branch`, {
         ...newBranchData,
       });
-      if (response.status == 200 && response.data.success == true) {
+      if (response.status == 201 && response.data.success == true) {
         console.log(response);
         actions.resetForm();
         toast.success(result.msg || "Branch Added!");
