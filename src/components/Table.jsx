@@ -63,7 +63,7 @@ const TableComponent = ({ data, columns, csvFileName }) => {
           placeholder="Search..."
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded outline-none focus:ring-blue-600 focus:border-blue-600"
+          className="w-full sm:w-full md:w-[300px] px-4 py-2 border border-gray-300 rounded outline-none focus:ring-blue-600 focus:border-blue-600"
         />
       </div>
       <div className="p-4 relative overflow-x-auto shadow-md sm:rounded-lg [&::-webkit-scrollbar]:w-.5 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
