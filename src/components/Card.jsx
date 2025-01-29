@@ -1,9 +1,11 @@
-import React from "react";
-
+import React, { useContext } from "react";
+import {navigateToPage} from '../utils/helper'
+import { AuthContext } from "../context/AuthContext";
 export default function Card(props) {
-  const { heading, description, footer, navigateToPage } = props;
+  const { data } = useContext(AuthContext);
+  const { heading, description, footer, navigate, path } = props;
   return (
-    <div onClick={()=>navigateToPage()} className="max-w-sm bg-white border border-gray-200 hover:bg-slate-50 rounded-lg shadow">
+    <div onClick={()=>navigate ? navigateToPage(data.role, navigate, path) : null} className="max-w-sm bg-white border border-gray-200 hover:bg-slate-50 rounded-lg shadow">
       <div className="p-5">
         <a href="#">
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">

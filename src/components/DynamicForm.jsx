@@ -43,15 +43,11 @@ const DynamicForm = ({
   } = useFormik({
     enableReinitialize: true,
     initialValues: generateInitialValues(),
-    validationSchema,
+    validationSchema: validationSchema ? validationSchema : undefined,
     onSubmit: (values, actions) => {
-      if (values.branch && typeof values.branch === "object") {
-        values.branch = values.branch.value;
-      }
       onSubmit(values, actions);
     },
   });
-
   return (
     <form
       onSubmit={(e) => {

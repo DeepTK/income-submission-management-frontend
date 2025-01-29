@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .toastContainer{
-    z-index: 1 !important;
+    z-index: 99 !important;
 }

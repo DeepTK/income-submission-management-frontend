@@ -4,8 +4,10 @@ import api from "../service/api.service";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toast";
 import DummyDashboard from "../components/DummyDashboard";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate()
   const { data } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState();
   const [dashboardData, setDashboardData] = useState();
@@ -69,6 +71,8 @@ const AdminDashboard = () => {
               heading={dashboardData.totalUsers}
               description={dashboardData.branchInfo.name}
               footer={"Total users of branch"}
+              navigate={navigate}
+              path={"branch"}  
             />
             <Card
               heading={missingIncomeData.summary.missingSelectedMonthCount}
@@ -78,9 +82,8 @@ const AdminDashboard = () => {
                 )?.label || "N/A"
               }`}
               footer={"Pending incomes"}
-              navigateToPage={() =>
-                navigateToPage(data.role, navigate, "all-branch")
-              }
+              navigate={navigate}
+              path={"all-users-income"}          
             />
             <Card
               heading={missingIncomeData.summary.neverSubmittedCount}
@@ -90,9 +93,6 @@ const AdminDashboard = () => {
                 )?.label || "N/A"
               }`}
               footer={"Never Submited incomes"}
-              navigateToPage={() =>
-                navigateToPage(data.role, navigate, "all-branch")
-              }
             />
           </>
         )}

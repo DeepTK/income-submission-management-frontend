@@ -10,6 +10,7 @@ import DynamicForm from "../components/DynamicForm";
 import ConfirmModal from "../components/ConfirmModal";
 import { UserPlusIcon } from "@heroicons/react/24/solid";
 import DummyTable from "../components/DummyTable";
+import { emailRegex, updateUserFormConfig } from "../utils/helper";
 
 export default function AllUsers() {
   const { role, data } = useContext(AuthContext);
@@ -19,34 +20,14 @@ export default function AllUsers() {
   const [userData, setUserData] = useState([]);
 
   const handleEditUser = (user) => {
+    setFormType("edit");
     const isOwnData = user._id === data._id;
     const userToEdit =
       isOwnData || role == "superadmin"
         ? { ...user, branch: user.branch._id, password: "", cpassword: "" }
         : { ...user, branch: user.branch._id };
-
     setInitialData(userToEdit);
-
-    setUserFormConfig((prev) =>
-      prev.map((field) => {
-        if (field.name === "password") {
-          return {
-            ...field,
-            placeholder: "Leave blank to keep current password",
-            hidden: false,
-            disabled: !isOwnData && role === "admin",
-          };
-        }
-        if (field.name === "cpassword") {
-          return {
-            ...field,
-            hidden: !isOwnData,
-            disabled: !isOwnData,
-          };
-        }
-        return field;
-      })
-    );
+    updateUserFormConfig(setUserFormConfig, "edit", isOwnData, role);
     setIsModalOpen(true);
   };
 
@@ -116,27 +97,7 @@ export default function AllUsers() {
   const openModalHandler = () => {
     setFormType("add");
     setInitialData({});
-    setUserFormConfig((prev) =>
-      prev.map((field) => {
-        if (field.name === "password") {
-          return {
-            ...field,
-            placeholder: "Enter password",
-            hidden: false,
-            disabled: false,
-          };
-        }
-        if (field.name === "cpassword") {
-          return {
-            ...field,
-            hidden: false,
-            disabled: false,
-          };
-        }
-        return field;
-      })
-    );
-
+    updateUserFormConfig(setUserFormConfig, "add", false, role);
     setIsModalOpen(true);
   };
   const closeModalHandler = () => {
@@ -266,8 +227,8 @@ export default function AllUsers() {
   }, []);
 
   const handleSubmit = async (values, actions) => {
-    setIsLoading(true);
     if (formType == "add") {
+      setIsLoading(true);
       const newUserData = {
         name: values.name,
         email: values.email,
@@ -279,7 +240,7 @@ export default function AllUsers() {
       const response = await api.post(`/auth/register`, {
         ...newUserData,
       });
-      if (response.status == 200 && response.data.success == true) {
+      if (response.status == 201 && response.data.success == true) {
         const result = response.data;
         actions.resetForm();
         toast.success(result.msg || "User Updated!");
@@ -291,34 +252,51 @@ export default function AllUsers() {
         toast.error(response.response.data.error || "Something went wrong!");
       }
     } else {
+      setIsLoading(true);
       const updatedUserData = {
         name: values.name,
         email: values.email,
         role: values.role,
         branch: values.branch,
-        isActive: values.isActive ?? true,
+        isActive: values.isActive === true ? true : false,
       };
 
       if (values.password) {
         updatedUserData.password = values.password;
       }
-      if (values.isActive == "") {
-        updatedUserData.isActive = true;
+
+      if (!values.name) {
+        return toast.error("Please enter user name")
       }
-      console.log(updatedUserData);
-      // const response = await api.post(`/user/update/${values._id}`, {
-      //   ...updatedUserData,
-      // });
-      // if (response.status == 200 && response.data.success == true) {
-      //   const result = response.data;
-      //   actions.resetForm();
-      //   toast.success(result.msg || "User Updated!");
-      //   setFormType("add");
-      //   closeModalHandler();
-      //   getUserData();
-      // } else {
-      //   toast.error(response.response.data.error || "Something went wrong!");
-      // }
+      if (!emailRegex.test(values.email)) {
+        return toast.error("Please enter valid user email")
+      }
+
+      if (!values.role) {
+        return toast.error("Please choose user role")
+      }
+
+      if (!values.branch) {
+        return toast.error("Please choose user branch")
+      }
+
+      if (!values.isActive) {
+        return toast.error("Please choose user status")
+      }
+
+      const response = await api.post(`/user/update/${values._id}`, {
+        ...updatedUserData,
+      });
+      if (response.status == 200 && response.data.success == true) {
+        const result = response.data;
+        actions.resetForm();
+        toast.success(result.msg || "User Updated!");
+        setFormType("add");
+        closeModalHandler();
+        getUserData();
+      } else {
+        toast.error(response.response.data.error || "Something went wrong!");
+      }
     }
   };
 
@@ -360,9 +338,7 @@ export default function AllUsers() {
       >
         <DynamicForm
           formConfig={userFormConfig}
-          validationSchema={
-            formType == "add" ? createUserSchema : updateUserSchema
-          }
+          validationSchema={formType === "add" ? createUserSchema : undefined}
           onSubmit={handleSubmit}
           initialData={initialData}
           submitButtonText={formType === "add" ? "Create User" : "Update User"}

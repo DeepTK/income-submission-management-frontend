@@ -1,5 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 
+export const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
 export const formatCurrency = (amount) => {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -100,6 +102,29 @@ export const month = [
   { value: 11, label: "November" },
   { value: 12, label: "December" },
 ];
+
+export const updateUserFormConfig = (setUserFormConfig, formType, isOwnData, role) => {
+  setUserFormConfig((prevConfig) =>
+    prevConfig.map((field) => {
+      if (field.name === "password") {
+        return {
+          ...field,
+          placeholder: formType === "add" ? "Enter password" : "Leave blank to keep current password",
+          hidden: formType === "edit" ? false : false,
+          disabled: formType === "edit" && !isOwnData && role === "admin",
+        };
+      }
+      if (field.name === "cpassword") {
+        return {
+          ...field,
+          hidden: formType === "edit" ? !isOwnData : false,
+          disabled: formType === "edit" ? !isOwnData : false,
+        };
+      }
+      return field;
+    })
+  );
+};
 
 export const useAutoLogout = (navigate) => {
   const token = localStorage.getItem("token");
